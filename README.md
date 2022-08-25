@@ -36,7 +36,7 @@ You can create SQL tables either from scratch or from existing tables.
 
 The following statement creates a table by specifying column names and values without referencing another table. Each `SELECT` clause specifies the values for one row, and `UNION` is used to join rows together. The `AS` clauses give a name to each column; it need not be repeated in subsequent rows after the first.
 
-```sqlite
+```sql
 CREATE TABLE [table_name] AS
   SELECT [val1] AS [column1], [val2] AS [column2], ... UNION
   SELECT [val3]             , [val4]             , ... UNION
@@ -49,7 +49,7 @@ Let's say we want to make the following table called `big_game` which records th
 
 We could do so with the following `CREATE TABLE` statement:
 
-```sqlite
+```sql
 CREATE TABLE big_game AS
   SELECT 30 AS berkeley, 7 AS stanford, 2002 AS year UNION
   SELECT 28,             16,            2003         UNION
@@ -60,7 +60,7 @@ CREATE TABLE big_game AS
 
 More commonly, we will create new tables by selecting specific columns that we want from existing tables by using a `SELECT` statement as follows:
 
-```sqlite
+```sql
 SELECT [columns] FROM [tables] WHERE [condition] ORDER BY [columns] LIMIT [limit];
 ```
 
@@ -78,7 +78,7 @@ Here are some examples:
 
 Select all of Berkeley's scores from the `big_game` table, but only include scores from years past 2002:
 
-```sqlite
+```sql
 sqlite> SELECT berkeley FROM big_game WHERE year > 2002;
 28
 17
@@ -86,7 +86,7 @@ sqlite> SELECT berkeley FROM big_game WHERE year > 2002;
 
 Select the scores for both schools in years that Berkeley won:
 
-```sqlite
+```sql
 sqlite> SELECT berkeley, stanford FROM big_game WHERE berkeley > stanford;
 30|7
 28|16
@@ -94,7 +94,7 @@ sqlite> SELECT berkeley, stanford FROM big_game WHERE berkeley > stanford;
 
 Select the years that Stanford scored more than 15 points:
 
-```sqlite
+```sql
 sqlite> SELECT year FROM big_game WHERE stanford > 15;
 2003
 2014
@@ -113,7 +113,7 @@ Here are some examples:
 
 Output the ratio of Berkeley's score to Stanford's score each year:
 
-```sqlite
+```sql
 sqlite> select berkeley * 1.0 / stanford from big_game;
 0.447368421052632
 1.75
@@ -122,7 +122,7 @@ sqlite> select berkeley * 1.0 / stanford from big_game;
 
 Output the sum of scores in years where both teams scored over 10 points:
 
-```sqlite
+```sql
 sqlite> select berkeley + stanford from big_game where berkeley > 10 and stanford > 10;
 55
 44
@@ -130,7 +130,7 @@ sqlite> select berkeley + stanford from big_game where berkeley > 10 and stanfor
 
 Output a table with a single column and single row containing the value "hello world":
 
-```sqlite
+```sql
 sqlite> SELECT "hello" || " " || "world";
 hello world
 ```
@@ -141,7 +141,7 @@ hello world
 
 To select data from multiple tables, we can use joins. There are many types of joins, but the only one we'll worry about is the inner join. To perform an inner join on two on more tables, simply list them all out in the `FROM` clause of a `SELECT` statement:
 
-```sqlite
+```sql
 SELECT [columns] FROM [table1], [table2], ... WHERE [condition] ORDER BY [columns] LIMIT [limit];
 ```
 
@@ -149,7 +149,7 @@ We can select from multiple different tables or from the same table multiple tim
 
 Let's say we have the following table that contains the names head football coaches at Cal since 2002:
 
-```sqlite
+```sql
 CREATE TABLE coaches AS
   SELECT "Jeff Tedford" AS name, 2002 as start, 2012 as end UNION
   SELECT "Sonny Dykes"         , 2013         , 2016        UNION
@@ -162,7 +162,7 @@ When we join two or more tables, the default output is a [cartesian product](htt
 
 If we want to match up each game with the coach that season, we'd have to compare columns from the two tables in the `WHERE` clause:
 
-```sqlite
+```sql
 sqlite> SELECT * FROM big_game, coaches WHERE year >= start AND year <= end;
 17|38|2014|Sonny Dykes|2013|2016
 28|16|2003|Jeff Tedford|2002|2012
@@ -171,7 +171,7 @@ sqlite> SELECT * FROM big_game, coaches WHERE year >= start AND year <= end;
 
 The following query outputs the coach and year for each Big Game win recorded in `big_game`:
 
-```sqlite
+```sql
 sqlite> SELECT name, year FROM big_game, coaches
 ...>        WHERE berkeley > stanford AND year >= start AND year <= end;
 Jeff Tedford|2003
@@ -182,7 +182,7 @@ In the queries above, none of the column names are ambiguous. For example, it is
 
 For examples, let's find out what the score difference is for each team between a game in `big_game` and any previous games. Since each row in this table represents one game, in order to compare two games we must join `big_game` with itself:
 
-```sqlite
+```sql
 sqlite> SELECT b.Berkeley - a.Berkeley, b.Stanford - a.Stanford, a.Year, b.Year
 ...>        FROM big_game AS a, big_game AS b WHERE a.Year < b.Year;
 -11|22|2003|2014
@@ -334,7 +334,7 @@ $ python3 sqlite_shell.py --init lab12.sql
 
 Before we start, inspect the schema of the tables that we've created for you:
 
-```sqlite
+```sql
 sqlite> .schema
 ```
 
@@ -342,7 +342,7 @@ This tells you the name of each of our tables and their attributes.
 
 Let's also take a look at some of the entries in our table. There are a lot of entries though, so let's just output the first 20:
 
-```sqlite
+```sql
 sqlite> SELECT * FROM students LIMIT 20;
 ```
 
@@ -350,7 +350,7 @@ If you're curious about some of the answers students put into the Google form, o
 
 For each of the SQL queries below, think about what the query is looking for, then try running the query yourself and see!
 
-```sqlite
+```sql
 sqlite> SELECT * FROM students LIMIT 30; -- This is a comment. * is shorthand for all columns!
 ______
 sqlite> SELECT color FROM students WHERE number = 7;
@@ -373,7 +373,7 @@ Write a SQL query to create a table that contains both the column `color` and th
 
 You should get the following output:
 
-```sqlite
+```sql
 sqlite> SELECT * FROM bluedog;
 blue|dog
 blue|dog
@@ -403,7 +403,7 @@ blue|dog
 blue|dog
 ```
 
-```sqlite
+```sql
 CREATE TABLE bluedog AS
   SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 ```
@@ -412,7 +412,7 @@ This isn't a very exciting table, though. Each of these rows represents a differ
 
 You should get the following output:
 
-```sqlite
+```sql
 sqlite> SELECT * FROM bluedog_songs;
 blue|dog|Smells like Teen Spirit
 blue|dog|The Middle
@@ -442,7 +442,7 @@ blue|dog|Dancing Queen
 blue|dog|Dancing Queen
 ```
 
-```sqlite
+```sql
 CREATE TABLE bluedog_songs AS
   SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 ```
@@ -467,7 +467,7 @@ Write an SQL query to create a table with the columns `time` and `smallest` that
 
 **Note:** Unfortunately, the smallest unique integer doesn't exist in the first 20 values greater than 2. For fun, you can try some new SQL queries (for example, looking at values larger than 10) to see if you can find the smallest unique integer!
 
-```sqlite
+```sql
 CREATE TABLE smallest_int AS
   SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 ```
@@ -499,7 +499,7 @@ In order to match up students, you will have to do a join on the `students` tabl
 >
 > *Hint:* When joining table names where column names are the same, use dot notation to distinguish which columns are from which table: `[table_name].[column name]`. This sometimes may get verbose, so it’s stylistically better to give tables an alias using the `AS` keyword. The syntax for this is as follows:
 >
-> ```sqlite
+> ```sql
 > SELECT <[alias1].[column name1], [alias2].[columnname2]...>
 >     FROM <[table_name1] AS [alias1],[table_name2] AS [alias2]...> ...
 > ```
@@ -513,7 +513,7 @@ Write a SQL query to create a table that has 4 columns:
 - The favorite `color` of the first person
 - The favorite `color` of the second person
 
-```sqlite
+```sql
 CREATE TABLE matchmaker AS
   SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 ```
@@ -543,7 +543,7 @@ How would you specify the `WHERE` clause to make the `SELECT` statement only con
 
 **Write a SQL query to create a table with just the column `seven` from `students`, filtering first for students who said their favorite number (column `number`) was 7 in the `students` table and who checked the box for seven (column `'7'`) in the `numbers` table.**
 
-```sqlite
+```sql
 CREATE TABLE sevens AS
   SELECT "REPLACE THIS LINE WITH YOUR SOLUTION";
 ```
